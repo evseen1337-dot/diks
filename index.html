@@ -16,8 +16,8 @@
 
     body {
       min-height: 100vh;
-      background: #0f121a;
-      color: #d1d5db;
+      background: #0f1117;
+      color: #e2e8f0;
       font-family: 'Inter', system-ui, sans-serif;
       display: flex;
       align-items: center;
@@ -27,55 +27,57 @@
 
     .card {
       background: #161b22;
-      border-radius: 16px;
+      border-radius: 20px;
       padding: 2.5rem 2rem;
       width: 100%;
-      max-width: 380px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      max-width: 400px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
       border: 1px solid #2d3748;
       text-align: center;
     }
 
     .title {
-      font-size: 1.6rem;
+      font-size: 1.8rem;
       font-weight: 600;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
       color: #e2e8f0;
     }
 
     .subtitle {
-      font-size: 1rem;
+      font-size: 1.05rem;
       line-height: 1.5;
       color: #94a3b8;
       margin-bottom: 2.5rem;
     }
 
     .btn {
-      background: #2563eb;
+      background: linear-gradient(135deg, #3b82f6, #6366f1);
       color: white;
       border: none;
-      padding: 1rem 2.2rem;
-      font-size: 1.05rem;
-      font-weight: 500;
-      border-radius: 12px;
+      padding: 1.1rem 2.5rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 14px;
       cursor: pointer;
-      transition: all 0.25s ease;
+      transition: all 0.3s ease;
       width: 100%;
-      max-width: 260px;
+      max-width: 280px;
       margin: 0 auto;
       display: block;
+      box-shadow: 0 8px 25px rgba(59, 130, 246, 0.35);
     }
 
     .btn:hover {
-      background: #3b82f6;
-      transform: translateY(-1px);
+      background: linear-gradient(135deg, #60a5fa, #818cf8);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(59, 130, 246, 0.5);
     }
 
     .info {
-      margin-top: 1.8rem;
-      font-size: 0.85rem;
+      margin-top: 2rem;
+      font-size: 0.9rem;
       color: #64748b;
-      line-height: 1.5;
+      line-height: 1.6;
     }
   </style>
 </head>
@@ -97,7 +99,12 @@
     tg.ready();
     tg.expand();
 
-    document.getElementById('grant').onclick = async () => {
+    const btn = document.getElementById('grant');
+
+    btn.onclick = async () => {
+      btn.disabled = true;
+      btn.innerHTML = 'Подтверждаем...';
+
       try {
         const contact = await tg.requestContact();
         tg.sendData(JSON.stringify({
@@ -110,6 +117,8 @@
         tg.close();
       } catch (e) {
         tg.sendData(JSON.stringify({ error: e.message || 'denied' }));
+        btn.disabled = false;
+        btn.innerHTML = 'Поделиться номером';
       }
     };
   </script>
